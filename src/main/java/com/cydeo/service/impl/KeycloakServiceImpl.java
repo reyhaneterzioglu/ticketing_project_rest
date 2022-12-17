@@ -36,6 +36,7 @@ public class KeycloakServiceImpl implements KeycloakService {
         credential.setValue(userDTO.getPassWord());
 
         UserRepresentation keycloakUser = new UserRepresentation();
+
         keycloakUser.setUsername(userDTO.getUserName());
         keycloakUser.setFirstName(userDTO.getFirstName());
         keycloakUser.setLastName(userDTO.getLastName());
@@ -43,7 +44,6 @@ public class KeycloakServiceImpl implements KeycloakService {
         keycloakUser.setCredentials(asList(credential));
         keycloakUser.setEmailVerified(true);
         keycloakUser.setEnabled(true);
-
 
         Keycloak keycloak = getKeycloakInstance();
 
@@ -54,10 +54,11 @@ public class KeycloakServiceImpl implements KeycloakService {
         Response result = usersResource.create(keycloakUser);
 
         String userId = getCreatedId(result);
+
         ClientRepresentation appClient = realmResource.clients()
                 .findByClientId(keycloakProperties.getClientId()).get(0);
 
-        RoleRepresentation userClientRole = realmResource.clients().get(appClient.getId()) //
+        RoleRepresentation userClientRole = realmResource.clients().get(appClient.getId())
                 .roles().get(userDTO.getRole().getDescription()).toRepresentation();
 
         realmResource.users().get(userId).roles().clientLevel(appClient.getId())
@@ -74,9 +75,11 @@ public class KeycloakServiceImpl implements KeycloakService {
         Keycloak keycloak = getKeycloakInstance();
 
         RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());
+
         UsersResource usersResource = realmResource.users();
 
         List<UserRepresentation> userRepresentations = usersResource.search(userName);
+
         String uid = userRepresentations.get(0).getId();
         usersResource.delete(uid);
 
@@ -84,6 +87,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     private Keycloak getKeycloakInstance() {
+
         return Keycloak.getInstance(keycloakProperties.getAuthServerUrl(),
                 keycloakProperties.getMasterRealm(), keycloakProperties.getMasterUser()
                 , keycloakProperties.getMasterUserPswd(), keycloakProperties.getMasterClient());

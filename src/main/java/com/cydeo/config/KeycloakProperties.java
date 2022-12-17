@@ -26,5 +26,4 @@ public class KeycloakProperties {
     private String masterRealm;
     @Value("${master.client}")
     private String masterClient;
-
 }
